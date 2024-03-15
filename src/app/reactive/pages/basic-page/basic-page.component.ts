@@ -17,32 +17,47 @@ export class BasicPageComponent implements OnInit{
   }
   Se podría mandar este objeto en el ngOnInit para establecer el dato que aparecerá al inicio del formulario
   */
+ ngOnInit(): void {
+   //this.myForm.reset() // acá se podría iniciarliazar el contenido de los campos para mostrar en el formulario
+ }
 
   constructor ( private formBuilder: FormBuilder) {}
 
-  ngOnInit(): void {
-    this.myForm.reset() // acá se podría iniciarliazar el contenido de los campos para mostrar en el formulario
-  }
 
   public myForm: FormGroup = this.formBuilder.group({
-    name: ['', [ Validators.required, Validators.minLength(3) ], ],
-    price: [0, [ Validators.required, Validators.min(0)] ],
-    inStorage: [0, [ Validators.required, Validators.min(0)] ],
+    name: ['', [ Validators.required, Validators.minLength(3) ] ],
+    price: [0, [ Validators.required, Validators.min(0) ] ],
+    inStorage: [0, [ Validators.required, Validators.min(0) ]],
   })
 
+
+  /*
+   public myForm: FormGroup = this.fb.group({
+    name: ['', [ Validators.required, Validators.minLength(3) ] ],
+    price: [0, [ Validators.required, Validators.min(0) ] ],
+    inStorage: [0, [ Validators.required, Validators.min(0) ]],
+  })
+  */
   isValidField( field: string ): boolean | null {
-    return this.myForm.controls[field].getError('required') && this.myForm.controls[field].touched;
+    return this.myForm.controls[field].errors
+      && this.myForm.controls[field].touched;
 
   }
 
   getError( field: string): string | null {
-    if ( !this.myForm.controls[field] && !this.myForm.controls[field].errors ) return null;
+    if ( !this.myForm.controls[field] ) return null;
 
     const errors = this.myForm.controls[field].errors || {};
-    console.log(`fuera del for ${Object.keys(errors)}` )
 
     for (const key of Object.keys(errors)) {
-      console.log(key)
+
+      switch(key) {
+        case 'required':
+          return 'Este campo es requerido';
+
+        case 'minlength':
+          return `Minimo ${errors['minlength'].requiredLength } caracteres`;
+      }
     }
     return ''
   }
@@ -54,9 +69,7 @@ export class BasicPageComponent implements OnInit{
       return;
     };
 
-    console.log(this.myForm.value);
-
-    this.myForm.reset() // los campos del formulario, todos se van a resetear, no es necesario pasar cada elemento.
+    this.myForm.reset({ price: 0, inStorage: 0 }); // los campos del formulario, todos se van a resetear, no es necesario pasar cada elemento.
   }
 
 }

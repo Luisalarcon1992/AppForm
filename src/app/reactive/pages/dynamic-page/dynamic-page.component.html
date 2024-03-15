@@ -1,15 +1,15 @@
 <h2>Reactivos: <small> Dinámicos </small></h2>
 <hr>
 
-<form autocomplete="off">
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()" autocomplete="off">
 
   <!-- Nombre -->
   <div class="mb-3 row">
     <label class="col-sm-3 col-form-label">Nombre</label>
     <div class="col-sm-9">
-      <input class="form-control" placeholder="Nombre de la persona">
-      <span class="form-text text-danger">
-        error message
+      <input class="form-control" placeholder="Nombre de la persona" formControlName="name">
+      <span class="form-text text-danger" *ngIf="isValidField('name')">
+        {{ getError('name')}}
       </span>
     </div>
   </div>
@@ -20,10 +20,8 @@
     <div class="col-sm-9">
 
       <div class="input-group">
-        <input class="form-control" placeholder="Agregar favorito">
-
-
-        <button class="btn btn-outline-primary" type="button">
+        <input class="form-control" placeholder="Agregar favorito" [formControl]="newFavorite">
+        <button class="btn btn-outline-primary" type="button" (click)="onAddFavoriteGame()">
           Agregar favorito
         </button>
       </div>
@@ -34,18 +32,18 @@
   <!-- Lista de Juegos Favoritos -->
   <div class="mb-3 row">
     <label class="col-sm-3 col-form-label">Favoritos</label>
-    <div class="col-sm-9">
+    <div class="col-sm-9" formArrayName="favoriteGames">
 
-      <div class="mb-1">
+      <div class="mb-1" *ngFor="let game of favoriteGames.controls; let i = index">
 
         <div class="input-group">
-          <input class="form-control">
+          <input class="form-control" [formControlName]="i">
 
-          <button class="btn btn-outline-danger" type="button">
+          <button class="btn btn-outline-danger" type="button" (click)="onDeleteFavoriteGame(i)">
             Eliminar
           </button>
         </div>
-        <span class="form-text text-danger">
+        <span class="form-text text-danger" *ngIf="isValidFieldInArray(favoriteGames, i)">
           Este campo es requerido
         </span>
 
