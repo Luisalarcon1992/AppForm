@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ValidatorsService } from 'src/app/shared/service/validators.service';
 
 @Component({
   templateUrl: './basic-page.component.html',
@@ -21,7 +22,10 @@ export class BasicPageComponent implements OnInit{
    //this.myForm.reset() // acá se podría iniciarliazar el contenido de los campos para mostrar en el formulario
  }
 
-  constructor ( private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private validatorsService: ValidatorsService,
+    ) {}
 
 
   public myForm: FormGroup = this.formBuilder.group({
@@ -39,9 +43,7 @@ export class BasicPageComponent implements OnInit{
   })
   */
   isValidField( field: string ): boolean | null {
-    return this.myForm.controls[field].errors
-      && this.myForm.controls[field].touched;
-
+    return this.validatorsService.isValidField( this.myForm, field );
   }
 
   getError( field: string): string | null {
